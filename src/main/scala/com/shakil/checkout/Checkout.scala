@@ -1,7 +1,7 @@
 package com.shakil.checkout
 
 case class Checkout (items: List[SKU], discounts: Set[SpecialPrice]) {
-  def total: Double = {
+  val total: Double = {
     items
       .groupBy(identity)
       .view
@@ -11,14 +11,14 @@ case class Checkout (items: List[SKU], discounts: Set[SpecialPrice]) {
 
   }
 
-  private def eachSkuTotal(sku: SKU, n: Int): Double = {
-    val offer = discounts.find(_.item == sku)
+  private def eachSkuTotal(sku: SKU, skuQuantity: Int): Double = {
+    val offer: Option[SpecialPrice] = discounts.find(_.item == sku)
     offer match {
-      case Some(x) =>
-        val promo = n / x.quantity * x.price
-        val nonPromo = sku.unitPrice * (n % x.quantity)
+      case Some(promotion) =>
+        val promo = skuQuantity / promotion.quantity * promotion.price
+        val nonPromo = sku.unitPrice * (skuQuantity % promotion.quantity)
         promo + nonPromo
-      case None => sku.unitPrice * n
+      case None => sku.unitPrice * skuQuantity
     }
   }
 }
