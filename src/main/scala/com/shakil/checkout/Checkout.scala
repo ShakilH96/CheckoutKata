@@ -6,7 +6,7 @@ case class Checkout (items: List[SKU], discounts: Set[SpecialPrice]) {
       .groupBy(identity)
       .view
       .mapValues(_.size)
-      .map { case (x, y) => eachSkuTotal(x, y) }
+      .map { case (sku, skuQuantity) => eachSkuTotal(sku, skuQuantity) }
       .sum
 
   }
